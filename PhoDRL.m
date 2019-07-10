@@ -3,7 +3,7 @@ rng(1337);
 randomProperties.numCells = 22;
 randomProperties.numSamples = 2048;
 
-correlationTreshold = 0.70;
+correlationTreshold = 0.10;
 
 % originalList: A numSamples x numCells matrix containing columns of
 % waveforms for each cell
@@ -13,6 +13,9 @@ if ~exist('rawLamnData','var')
     originalList = double(rawLamnData(:,1:64));
     % rawLamnData: 52004160 x 64
 end
+
+originalListUniqueCellIDs = originalList(1:3,:);
+
 % if ~exist('originalList','var')
 %    originalList = rand(randomProperties.numSamples,randomProperties.numCells-2);
 %    originalList(:, end-3) = originalList(:, 1);
@@ -30,6 +33,7 @@ outputPartitionedList = {};
 iterationIndex = 1;
 partitionIndex = 1;
 corrCoef = [];
+totalIndex = 1;
 while(size(activeList,2) > 0)
     % Always take the currSeedCell as the first cell of the activeList
     currSeedCell = activeList(:,1);
@@ -98,5 +102,6 @@ function [similarCellIndicies, activePartitionList] = findSimilar(currSeedCell, 
            activePartitionList = [activePartitionList activeList(:,i)];
         end
     end
+    disp([num2str(totalIndex) ': max ' num2str(max(corrCoef))])
 end
 
