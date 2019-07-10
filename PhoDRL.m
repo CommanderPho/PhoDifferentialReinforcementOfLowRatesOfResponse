@@ -7,13 +7,13 @@ correlationTreshold = 0.70;
 
 % originalList: A numSamples x numCells matrix containing columns of
 % waveforms for each cell
-if ~exist('originalList','var')
+% if ~exist('originalList','var')
    originalList = rand(randomProperties.numSamples,randomProperties.numCells-2);
-   originalList(:, end-3) = originalList(:, 3);
+   originalList(:, end-3) = originalList(:, 1);
    originalList(:, end-2) = 2 .* originalList(:, end-4);
-   originalList(:, end-1) = rand(randomProperties.numSamples,1) .* originalList(:, end-3) + originalList(:, end-6);
+   originalList(:, end-1) = rand(randomProperties.numSamples,1) .* originalList(:, end-3) + originalList(:, 1);
    originalList(:, end) = rand(randomProperties.numSamples,1) .* originalList(:, end-10) + originalList(:, end-9);
-end
+% end
 
 numCells = size(originalList, 2);
 numSamples = size(originalList, 1);
@@ -30,11 +30,11 @@ while(size(activeList,2) > 0)
     activePartitionList = [];
     similarCellIndicies = [];
     % Iterate through the active list and find the correlation between
-    corrCoef{iterationIndex} = zeros(numRemainingCells,1);
+    corrCoef = [corrCoef zeros(numRemainingCells,1)];
     for i = 1:numRemainingCells
         corrCoefTemp = corrcoef(currSeedCell, activeList(:,i));
-        corrCoef{i,iterationIndex} = corrCoefTemp(2,1); % Get the off-diagonal entry of the 2x2 correlation matrix. (1,2) would work too and be the same).
-        if corrCoef{i,iterationIndex} >= correlationTreshold
+        corrCoef(i) = corrCoefTemp(2,1); % Get the off-diagonal entry of the 2x2 correlation matrix. (1,2) would work too and be the same).
+        if corrCoef(i) >= correlationTreshold
            similarCellIndicies(end+1) = i;
            activePartitionList = [activePartitionList activeList(:,i)];
         end
@@ -51,3 +51,23 @@ while(size(activeList,2) > 0)
 
     % Iterate until the activeList is empty
 end
+
+
+
+function [similarCellIndicies, activePartitionList] = findSimilar(currSeedCell, activeList, correlationTreshold)
+% findSimilar Returns indicies of cells in activeList that are within correlationTreshold similar to seedCell.
+    numRemainingCells = size(activeList,2);
+    activePartitionList = [];
+    similarCellIndicies = [];
+    % Iterate through the active list and find the correlation between
+    corrCoef = zeros(numRemainingCells,1);
+    for i = 1:numRemainingCells
+        corrCoefTemp = corrcoef(currSeedCell, activeList(:,i));
+        corrCoef(i) = corrCoefTemp(2,1); % Get the off-diagonal entry of the 2x2 correlation matrix. (1,2) would work too and be the same).
+        if corrCoef(i) >= correlationTreshold
+           similarCellIndicies(end+1) = i;
+           activePartitionList = [activePartitionList activeList(:,i)];
+        end
+    end
+end
+
