@@ -3,6 +3,8 @@ rng(1337);
 randomProperties.numCells = 22;
 randomProperties.numSamples = 2048;
 
+%% TODO: Improve efficiency by just passing around indicies of the cells instead of the whole cell waveform.
+
 correlationTreshold = 0.10;
 
 % originalList: A numSamples x numCells matrix containing columns of
@@ -33,7 +35,7 @@ outputPartitionedList = {};
 iterationIndex = 1;
 partitionIndex = 1;
 corrCoef = [];
-totalIndex = 1;
+% totalIndex = 1;
 while(size(activeList,2) > 0)
     % Always take the currSeedCell as the first cell of the activeList
     currSeedCell = activeList(:,1);
@@ -102,6 +104,6 @@ function [similarCellIndicies, activePartitionList] = findSimilar(currSeedCell, 
            activePartitionList = [activePartitionList activeList(:,i)];
         end
     end
-    disp([num2str(totalIndex) ': max ' num2str(max(corrCoef))])
+    disp([': max ' num2str(max(corrCoef))])
 end
 
