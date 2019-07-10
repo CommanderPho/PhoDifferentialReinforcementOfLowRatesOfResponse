@@ -7,12 +7,18 @@ correlationTreshold = 0.70;
 
 % originalList: A numSamples x numCells matrix containing columns of
 % waveforms for each cell
+if ~exist('rawLamnData','var')
+    rawLamnData = bz_LoadBinary('/data/Lezio/LB_13/LB_13_190710/LB_13_190710_113842/amplifier_analogin_auxiliary_int16.dat', 'nChannels',68)*0.195;
+    % rawLamnData: 52004160 x 68
+    originalList = double(rawLamnData(:,1:64));
+    % rawLamnData: 52004160 x 64
+end
 % if ~exist('originalList','var')
-   originalList = rand(randomProperties.numSamples,randomProperties.numCells-2);
-   originalList(:, end-3) = originalList(:, 1);
-   originalList(:, end-2) = 2 .* originalList(:, end-4);
-   originalList(:, end-1) = rand(randomProperties.numSamples,1) .* originalList(:, end-3) + originalList(:, 1);
-   originalList(:, end) = rand(randomProperties.numSamples,1) .* originalList(:, end-10) + originalList(:, end-9);
+%    originalList = rand(randomProperties.numSamples,randomProperties.numCells-2);
+%    originalList(:, end-3) = originalList(:, 1);
+%    originalList(:, end-2) = 2 .* originalList(:, end-4);
+%    originalList(:, end-1) = rand(randomProperties.numSamples,1) .* originalList(:, end-3) + originalList(:, 1);
+%    originalList(:, end) = rand(randomProperties.numSamples,1) .* originalList(:, end-10) + originalList(:, end-9);
 % end
 
 numCells = size(originalList, 2);
